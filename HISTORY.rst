@@ -2,6 +2,13 @@
 History
 =======
 
+0.1.3 (2023-09-15)
+------------------
+
+* Rewards and penalties changed to be callbacks.
+* NormativeResponse arrays renamed.
+* New example showing callbacks.
+
 0.1.2 (2023-09-14)
 ------------------
 

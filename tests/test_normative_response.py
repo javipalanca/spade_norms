@@ -16,9 +16,8 @@ def test_add_allowing_norm_returns_allowed_over_empty_list():
     norm_response.add_allowing_norm(norm)
     
     assert norm_response.response_type == NormativeActionStatus.ALLOWED
-    assert len(norm_response.norms_following) == 1
-    assert len(norm_response.norms_breaking) == 0
-    assert norm_response.total_reward == norm.reward
+    assert len(norm_response.norms_allowing) == 1
+    assert len(norm_response.norms_forbidding) == 0
 
 def test_add_allowing_norm_returns_allowed_over_allowed():
     norm_response = create_empty_normative_response()
@@ -27,9 +26,8 @@ def test_add_allowing_norm_returns_allowed_over_allowed():
     norm_response.add_allowing_norm(norm)
     
     assert norm_response.response_type == NormativeActionStatus.ALLOWED
-    assert len(norm_response.norms_following) == 1
-    assert len(norm_response.norms_breaking) == 0
-    assert norm_response.total_reward == norm.reward
+    assert len(norm_response.norms_allowing) == 1
+    assert len(norm_response.norms_forbidding) == 0
 
 def test_add_allowing_norm_returns_forbidden_over_forbidden():
     norm_response = create_empty_normative_response()
@@ -38,9 +36,8 @@ def test_add_allowing_norm_returns_forbidden_over_forbidden():
     norm_response.add_allowing_norm(norm)
     
     assert norm_response.response_type == NormativeActionStatus.FORBIDDEN
-    assert len(norm_response.norms_following) == 1
-    assert len(norm_response.norms_breaking) == 0
-    assert norm_response.total_reward == norm.reward
+    assert len(norm_response.norms_allowing) == 1
+    assert len(norm_response.norms_forbidding) == 0
 
 def test_add_allowing_norm_returns_inviolable_over_inviolable():
     norm_response = create_empty_normative_response()
@@ -49,9 +46,8 @@ def test_add_allowing_norm_returns_inviolable_over_inviolable():
     norm_response.add_allowing_norm(norm)
     
     assert norm_response.response_type == NormativeActionStatus.INVIOLABLE
-    assert len(norm_response.norms_following) == 1
-    assert len(norm_response.norms_breaking) == 0
-    assert norm_response.total_reward == norm.reward
+    assert len(norm_response.norms_allowing) == 1
+    assert len(norm_response.norms_forbidding) == 0
 
 def test_add_forbidding_norm_returns_forbidden_over_empty_list():
     norm_response = create_empty_normative_response()
@@ -59,9 +55,8 @@ def test_add_forbidding_norm_returns_forbidden_over_empty_list():
     norm_response.add_forbidding_norm(norm)
     
     assert norm_response.response_type == NormativeActionStatus.FORBIDDEN
-    assert len(norm_response.norms_following) == 0
-    assert len(norm_response.norms_breaking) == 1
-    assert norm_response.total_penalty == norm.penalty
+    assert len(norm_response.norms_allowing) == 0
+    assert len(norm_response.norms_forbidding) == 1
 
 def test_add_forbidding_norm_returns_forbidden_over_allowed():
     norm_response = create_empty_normative_response()
@@ -70,9 +65,8 @@ def test_add_forbidding_norm_returns_forbidden_over_allowed():
     norm_response.add_forbidding_norm(norm)
     
     assert norm_response.response_type == NormativeActionStatus.FORBIDDEN
-    assert len(norm_response.norms_following) == 0
-    assert len(norm_response.norms_breaking) == 1
-    assert norm_response.total_penalty == norm.penalty
+    assert len(norm_response.norms_allowing) == 0
+    assert len(norm_response.norms_forbidding) == 1
 
 def test_add_forbidding_norm_returns_forbidden_over_forbidden():
     norm_response = create_empty_normative_response()
@@ -81,9 +75,8 @@ def test_add_forbidding_norm_returns_forbidden_over_forbidden():
     norm_response.add_forbidding_norm(norm)
     
     assert norm_response.response_type == NormativeActionStatus.FORBIDDEN
-    assert len(norm_response.norms_following) == 0
-    assert len(norm_response.norms_breaking) == 1
-    assert norm_response.total_penalty == norm.penalty
+    assert len(norm_response.norms_allowing) == 0
+    assert len(norm_response.norms_forbidding) == 1
 
 def test_add_forbidding_norm_returns_inviolable_over_inviolable():
     norm_response = create_empty_normative_response()
@@ -92,9 +85,8 @@ def test_add_forbidding_norm_returns_inviolable_over_inviolable():
     norm_response.add_forbidding_norm(norm)
     
     assert norm_response.response_type == NormativeActionStatus.INVIOLABLE
-    assert len(norm_response.norms_following) == 0
-    assert len(norm_response.norms_breaking) == 1
-    assert norm_response.total_penalty == norm.penalty
+    assert len(norm_response.norms_allowing) == 0
+    assert len(norm_response.norms_forbidding) == 1
 
 def test_add_forbidding_norm_returns_inviolable_over_empty_when_inviolable():
     norm_response = create_empty_normative_response()
@@ -102,9 +94,8 @@ def test_add_forbidding_norm_returns_inviolable_over_empty_when_inviolable():
     norm_response.add_forbidding_norm(norm)
     
     assert norm_response.response_type == NormativeActionStatus.INVIOLABLE
-    assert len(norm_response.norms_following) == 0
-    assert len(norm_response.norms_breaking) == 1
-    assert norm_response.total_penalty == norm.penalty
+    assert len(norm_response.norms_allowing) == 0
+    assert len(norm_response.norms_forbidding) == 1
 
 def test_add_forbidding_norm_returns_inviolable_over_allowed_when_inviolable():
     norm_response = create_empty_normative_response()
@@ -113,9 +104,8 @@ def test_add_forbidding_norm_returns_inviolable_over_allowed_when_inviolable():
     norm_response.add_forbidding_norm(norm)
     
     assert norm_response.response_type == NormativeActionStatus.INVIOLABLE
-    assert len(norm_response.norms_following) == 0
-    assert len(norm_response.norms_breaking) == 1
-    assert norm_response.total_penalty == norm.penalty
+    assert len(norm_response.norms_allowing) == 0
+    assert len(norm_response.norms_forbidding) == 1
 
 def test_add_forbidding_norm_returns_inviolable_over_forbidden_when_inviolable():
     norm_response = create_empty_normative_response()
@@ -124,9 +114,8 @@ def test_add_forbidding_norm_returns_inviolable_over_forbidden_when_inviolable()
     norm_response.add_forbidding_norm(norm)
     
     assert norm_response.response_type == NormativeActionStatus.INVIOLABLE
-    assert len(norm_response.norms_following) == 0
-    assert len(norm_response.norms_breaking) == 1
-    assert norm_response.total_penalty == norm.penalty
+    assert len(norm_response.norms_allowing) == 0
+    assert len(norm_response.norms_forbidding) == 1
 
 def test_add_forbidding_norm_returns_inviolable_over_inviolable_when_inviolable():
     norm_response = create_empty_normative_response()
@@ -135,6 +124,5 @@ def test_add_forbidding_norm_returns_inviolable_over_inviolable_when_inviolable(
     norm_response.add_forbidding_norm(norm)
     
     assert norm_response.response_type == NormativeActionStatus.INVIOLABLE
-    assert len(norm_response.norms_following) == 0
-    assert len(norm_response.norms_breaking) == 1
-    assert norm_response.total_penalty == norm.penalty
+    assert len(norm_response.norms_allowing) == 0
+    assert len(norm_response.norms_forbidding) == 1

@@ -3,14 +3,11 @@ from .norm import Norm
 from ..actions.normative_action import NormativeAction
 
 class NormativeResponse():
-    def __init__(self, action: NormativeAction, responseType: NormativeActionStatus = NormativeActionStatus.NOT_REGULATED, norms_following: list = None, norms_breaking : list = None
-                , total_reward:float = 0.0, total_penalty: float = 0.0):
+    def __init__(self, action: NormativeAction, responseType: NormativeActionStatus = NormativeActionStatus.NOT_REGULATED, norms_allowing: list = None, norms_forbidding : list = None):
         self.action = action
         self.response_type = responseType
-        self.norms_following = norms_following if norms_following != None else [] 
-        self.norms_breaking = norms_breaking if norms_breaking != None else [] 
-        self.total_reward = total_reward
-        self.total_penalty = total_penalty
+        self.norms_allowing = norms_allowing if norms_allowing != None else [] 
+        self.norms_forbidding = norms_forbidding if norms_forbidding != None else [] 
 
     def add_allowing_norm(self, norm: Norm):
         '''
@@ -18,8 +15,7 @@ class NormativeResponse():
         - if no norm has been processed or current status is `ALLOWED`, status will be `ALLOWED`.
         - For any other case, the status will remain the same. I.e: if its `FORBIDDEN` or `INVIOLABLE`
         '''
-        self.norms_following.append(norm)
-        self.total_reward += norm.reward
+        self.norms_allowing.append(norm)
 
         if self.response_type == None or self.response_type == NormativeActionStatus.ALLOWED or self.response_type == NormativeActionStatus.NOT_REGULATED:
             self.response_type = NormativeActionStatus.ALLOWED
@@ -30,8 +26,7 @@ class NormativeResponse():
         - if there has been a forbidden state for an inviolable norm, status will remain `INVIOLABLE`.
         - if no norm has been processed or current status is FORBIDDEN, status will be FORBIDDEN.
         '''
-        self.norms_breaking.append(norm)
-        self.total_penalty += norm.penalty
+        self.norms_forbidding.append(norm)
 
         if norm.inviolable or self.response_type == NormativeActionStatus.INVIOLABLE:
             self.response_type = NormativeActionStatus.INVIOLABLE
@@ -40,4 +35,4 @@ class NormativeResponse():
 
 
     def __str__(self):
-        return '{' +  '\tresponse type: {},\n\norms_complying: {},\n\norms_breaking: {},\n\ttotal_reward: {},\n\ttotal_penalty: {}'.format(self.response_type, self.norms_following, self.norms_breaking, self.total_reward, self.total_penalty)  + '}'
+        return '{' +  '\tresponse type: {},\nnorms_complying: {},\nnorms_breaking: {}'.format(self.response_type, self.norms_allowing, self.norms_forbidding)  + '}'

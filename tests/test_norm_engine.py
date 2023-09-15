@@ -212,7 +212,7 @@ def test_check_legislation_returns_inviolable_on_norm_forbidding_with_no_concern
     norm_resp = norm_eng.check_legislation(action, agent)
 
     assert norm_resp.response_type == NormativeActionStatus.INVIOLABLE
-    assert len(norm_resp.norms_breaking) == 1
+    assert len(norm_resp.norms_forbidding) == 1
 
 def test_check_legislation_returns_forbidden_on_norm_forbidding_with_no_concern(agent):
     agent.normative.concerns = {}
@@ -225,7 +225,7 @@ def test_check_legislation_returns_forbidden_on_norm_forbidding_with_no_concern(
     norm_resp = norm_eng.check_legislation(action, agent)
 
     assert norm_resp.response_type == NormativeActionStatus.FORBIDDEN
-    assert len(norm_resp.norms_breaking) == 1
+    assert len(norm_resp.norms_forbidding) == 1
 
 def test_check_legislation_returns_inviolable_on_norm_forbidding_with_allowing_concern(agent):
     agent.normative.concerns = {}
@@ -240,8 +240,8 @@ def test_check_legislation_returns_inviolable_on_norm_forbidding_with_allowing_c
     norm_resp = norm_eng.check_legislation(action, agent)
 
     assert norm_resp.response_type == NormativeActionStatus.INVIOLABLE
-    assert len(norm_resp.norms_breaking) == 1
-    assert len(norm_resp.norms_following) == 1
+    assert len(norm_resp.norms_forbidding) == 1
+    assert len(norm_resp.norms_allowing) == 1
 
 def test_check_legislation_returns_forbidden_on_norm_forbidding_with_allowing_concern(agent):
     agent.normative.concerns = {}
@@ -256,8 +256,8 @@ def test_check_legislation_returns_forbidden_on_norm_forbidding_with_allowing_co
     norm_resp = norm_eng.check_legislation(action, agent)
 
     assert norm_resp.response_type == NormativeActionStatus.FORBIDDEN
-    assert len(norm_resp.norms_breaking) == 1
-    assert len(norm_resp.norms_following) == 1
+    assert len(norm_resp.norms_forbidding) == 1
+    assert len(norm_resp.norms_allowing) == 1
 
 def test_check_legislation_returns_inviolable_on_norm_forbidding_with_forbidding_concern(agent):
     agent.normative.concerns = {}
@@ -272,7 +272,7 @@ def test_check_legislation_returns_inviolable_on_norm_forbidding_with_forbidding
     norm_resp = norm_eng.check_legislation(action, agent)
 
     assert norm_resp.response_type == NormativeActionStatus.INVIOLABLE
-    assert len(norm_resp.norms_breaking) == 2
+    assert len(norm_resp.norms_forbidding) == 2
 
 def test_check_legislation_returns_forbidden_on_norm_forbidding_with_forbidding_concern(agent):
     agent.normative.concerns = {}
@@ -287,7 +287,7 @@ def test_check_legislation_returns_forbidden_on_norm_forbidding_with_forbidding_
     norm_resp = norm_eng.check_legislation(action, agent)
 
     assert norm_resp.response_type == NormativeActionStatus.FORBIDDEN
-    assert len(norm_resp.norms_breaking) == 2
+    assert len(norm_resp.norms_forbidding) == 2
 
 def test_check_legislation_returns_inviolable_on_concern_forbidding_with_no_norm(agent):
     agent.normative.concerns = {}
@@ -300,7 +300,7 @@ def test_check_legislation_returns_inviolable_on_concern_forbidding_with_no_norm
     norm_resp = norm_eng.check_legislation(action, agent)
     
     assert norm_resp.response_type == NormativeActionStatus.INVIOLABLE
-    assert len(norm_resp.norms_breaking) == 1
+    assert len(norm_resp.norms_forbidding) == 1
 
 def test_check_legislation_returns_forbidden_on_concern_forbidding_with_no_norm(agent):
     agent.normative.concerns = {}
@@ -313,7 +313,7 @@ def test_check_legislation_returns_forbidden_on_concern_forbidding_with_no_norm(
     norm_resp = norm_eng.check_legislation(action, agent)
     
     assert norm_resp.response_type == NormativeActionStatus.FORBIDDEN
-    assert len(norm_resp.norms_breaking) == 1
+    assert len(norm_resp.norms_forbidding) == 1
 
 def test_check_legislation_returns_inviolable_on_norm_allowing_with_forbidding_concern(agent):
     agent.normative.concerns = {}
@@ -328,8 +328,8 @@ def test_check_legislation_returns_inviolable_on_norm_allowing_with_forbidding_c
     norm_resp = norm_eng.check_legislation(action, agent)
 
     assert norm_resp.response_type == NormativeActionStatus.INVIOLABLE
-    assert len(norm_resp.norms_breaking) == 1
-    assert len(norm_resp.norms_following) == 1
+    assert len(norm_resp.norms_forbidding) == 1
+    assert len(norm_resp.norms_allowing) == 1
 
 def test_check_legislation_returns_forbidden_on_norm_allowing_with_forbidding_concern(agent):
     agent.normative.concerns = {}
@@ -344,8 +344,8 @@ def test_check_legislation_returns_forbidden_on_norm_allowing_with_forbidding_co
     norm_resp = norm_eng.check_legislation(action, agent)
 
     assert norm_resp.response_type == NormativeActionStatus.FORBIDDEN
-    assert len(norm_resp.norms_breaking) == 1
-    assert len(norm_resp.norms_following) == 1
+    assert len(norm_resp.norms_forbidding) == 1
+    assert len(norm_resp.norms_allowing) == 1
 
 def test_check_legislation_returns_allowed_on_norm_allowing_with_no_concern(agent):
     agent.normative.concerns = {}
@@ -358,7 +358,7 @@ def test_check_legislation_returns_allowed_on_norm_allowing_with_no_concern(agen
     norm_resp = norm_eng.check_legislation(action, agent)
 
     assert norm_resp.response_type == NormativeActionStatus.ALLOWED
-    assert len(norm_resp.norms_following) == 1
+    assert len(norm_resp.norms_allowing) == 1
 
 def test_check_legislation_returns_allowed_on_concern_allowing_with_no_norms(agent):
     agent.normative.concerns = {}
@@ -371,7 +371,7 @@ def test_check_legislation_returns_allowed_on_concern_allowing_with_no_norms(age
     norm_resp = norm_eng.check_legislation(action, agent)
 
     assert norm_resp.response_type == NormativeActionStatus.ALLOWED
-    assert len(norm_resp.norms_following) == 1
+    assert len(norm_resp.norms_allowing) == 1
 
 def test_check_legislation_returns_allowed_on_concern_and_norm_allowing(agent):
     agent.normative.concerns = {}
@@ -386,4 +386,4 @@ def test_check_legislation_returns_allowed_on_concern_and_norm_allowing(agent):
     norm_resp = norm_eng.check_legislation(action, agent)
 
     assert norm_resp.response_type == NormativeActionStatus.ALLOWED
-    assert len(norm_resp.norms_following) == 2
+    assert len(norm_resp.norms_allowing) == 2

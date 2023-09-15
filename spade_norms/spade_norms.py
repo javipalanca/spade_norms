@@ -1,3 +1,5 @@
+from spade_norms.norms.norm_enums import *
+from .norms.normative_response import NormativeResponse
 from .engines.reasoning_engine import NormativeReasoningEngine
 from .actions.normative_action import NormativeAction
 from .engines.norm_engine import NormativeEngine
@@ -60,25 +62,26 @@ class NormativeComponent:
 
     async def perform(self, action_name: str, *args, **kwargs):
         self.__check_exists(action_name)
-        do_action = self.__normative_eval(action_name)
+        do_action, n_response = self.__normative_eval(action_name)
         if do_action:
             try:
                 action_result = await self.actions[action_name].action_fn(
                     self.agent, *args, **kwargs
                 )
-                return True, action_result
+                cb_res_dict = await self.__compute_rewards_and_penalties(self.agent, n_response, do_action)
+                return True, action_result, cb_res_dict
                 
             except Exception:
                 logging.error(traceback.format_exc())
                 print("Error performing action: ", sys.exc_info()[0])
         else:
-            # TODO: proceeding for actions not performed
             print(
                 "[{}]: Action {} not performed due to normative constrictions".format(
                     self.agent.jid, action_name
                 )
             )
-        return False, None
+            cb_res_dict = await self.__compute_rewards_and_penalties(self.agent, n_response, do_action)
+        return False, None, cb_res_dict
 
     def __check_exists(self, action_name: str):
         if self.actions.get(action_name, None) is None:
@@ -88,6 +91,7 @@ class NormativeComponent:
 
     def __normative_eval(self, action_name):
         action = self.actions[action_name]
+        normative_response = None
         if self.normative_engine is not None:
             normative_response = self.normative_engine.check_legislation(
                 action, self.agent
@@ -95,7 +99,29 @@ class NormativeComponent:
             do_action = self.reasoning_engine.inference(self.agent, normative_response)
         else:
             do_action = True
-        return do_action
+        return do_action, normative_response
+    
+    async def __compute_rewards_and_penalties(self, agent: Agent, n_resp: NormativeResponse, done: bool):
+        callback_result_dict = {}
+
+        if n_resp != None:
+            for norm in n_resp.norms_forbidding: # Norms that evaluation forbidds action
+                if n_resp.response_type == NormativeActionStatus.FORBIDDEN or \
+                    n_resp.response_type == NormativeActionStatus.INVIOLABLE:
+                    if done:
+                        callback_result_dict[norm.name] = await self.__execute_penalty_callback(norm, agent)
+                    else:
+                        callback_result_dict[norm.name] = await self.__execute_reward_callback(norm, agent)
+
+        return callback_result_dict
+
+    async def __execute_penalty_callback(self, norm: Norm, agent: Agent):
+        if norm.penalty_cb != None:
+            return await norm.penalty_cb(agent)
+
+    async def __execute_reward_callback(self, norm: Norm, agent: Agent):
+        if norm.reward_cb != None:
+            return await norm.reward_cb(agent)
 
     def add_action(self, action: NormativeAction):
         self.actions[action.name] = action

@@ -4,7 +4,7 @@ from typing import Callable
 
 class Norm():
     def __init__(self ,name: str, norm_type: NormType, condition_fn: Callable, activation_fn: Callable = None, 
-                is_active: bool = True, reward: float = 1.0, penalty: float = -1.0, roles: list = [], 
+                is_active: bool = True, reward_cb: Callable = None, penalty_cb: Callable = None, roles: list = [], 
                 domain: Enum = 0, inviolable: bool = True, issuer: NormIssuer = NormIssuer.ORGANIZATION):
         '''
         Creates an object of type norm given a norm `Name`, `NormType`, and a pointer to a `condition function`. 
@@ -15,8 +15,8 @@ class Norm():
         self.condition_fn = condition_fn
         #self.activation_fn = activation_fn
         #self.is_active = is_active
-        self.reward = reward
-        self.penalty = penalty
+        self.reward_cb = reward_cb
+        self.penalty_cb = penalty_cb
         self.roles = roles
         self.domain = domain
         self.inviolable = inviolable
