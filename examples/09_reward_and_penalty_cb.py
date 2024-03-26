@@ -11,6 +11,7 @@ from enum import Enum
 import asyncio
 import spade
 
+
 # create class wich inherits from NormativeReasoningEngine and override inference method.
 class AdvancedReasoningEngine(NormativeReasoningEngine):
     def inference(self, agent: Agent, norm_response: NormativeResponse):
@@ -61,6 +62,7 @@ async def reward_callback(agent):
     print(f"[{agent.jid}] rewarded for following rule. Counter increased")
     agent.counter += 10
 
+
 async def penalty_callback(agent):
     print(f"[{agent.jid}] punished for breaking rule. 3s of inactivity")
     await asyncio.sleep(3)
@@ -68,7 +70,7 @@ async def penalty_callback(agent):
 
 class CyclicPrintBehaviour(CyclicBehaviour):
     async def run(self):
-        performed, _, _  = await self.agent.normative.perform("print")
+        performed, _, _ = await self.agent.normative.perform("print")
         await asyncio.sleep(2)
         self.agent.counter += 1
 
@@ -109,7 +111,7 @@ async def main():
 
     # 5 create agent with user, apssword and normative engine
     norm_breaker_agent = PrinterAgent(
-        "norm_breaker@gtirouter.dsic.upv.es",
+        "norm_breaker@your.xmpp.server",
         "test",
         role=Role.EVEN_HATER,
         reasoning_engine=advanced_reasoning_engine,
@@ -118,7 +120,7 @@ async def main():
     )
     # Note that this agent has the default normative engine
     norm_follower_agent = PrinterAgent(
-        "norm_follower@gtirouter.dsic.upv.es",
+        "norm_follower@your.xmpp.server",
         "test",
         role=Role.EVEN_HATER,
         normative_engine=normative_engine,

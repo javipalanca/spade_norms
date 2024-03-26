@@ -21,10 +21,10 @@ class Role(Enum):
     RECEIVER = 1
 
 
-async def send_number(agent, behaviour, send_agent, recv_agent):
+async def send_number(agent, behaviour, recv_agent):
     msg = Message(
         to=str(recv_agent.jid),
-        body="{}".format(send_agent.counter),
+        body="{}".format(agent.counter),
         metadata={"performative": "inform"},
     )
     await behaviour.send(msg)
@@ -36,7 +36,7 @@ def only_sender_can_send(agent):
 
 class CyclicSendBehaviour(CyclicBehaviour):
     async def run(self):
-        await self.agent.normative.perform("send", self, self.agent, self.agent.recv)
+        await self.agent.normative.perform("send", action_kw = {'behaviour': self, 'recv_agent': self.agent.recv})
         await asyncio.sleep(2)
         self.agent.counter += 1
 

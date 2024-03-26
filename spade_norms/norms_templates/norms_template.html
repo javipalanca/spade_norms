@@ -1,0 +1,376 @@
+{% extends "internal_tpl_base.html" %}
+
+{% block content_title %}Normative Component{% endblock %}
+{% block content %}
+<!-- Main content -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism.min.css" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-python.min.js"></script>
+
+<style>
+    @media screen and (max-width: 1300px) {
+        /* En pantallas pequeñas, cambia las celdas del cuerpo de la tabla a un diseño de bloques */
+        .table-responsive .norms tbody tr, .table-responsive .norms tbody td {
+            display: block;
+        }
+
+        .table-responsive .norms tbody td {
+            border: none;
+            border-bottom: 1px solid #eee;
+            position: relative;
+            padding-left: 50%;
+        }
+
+        .table-responsive .norms tbody td:before {
+            position: absolute;
+            top: 6px;
+            left: 6px;
+            width: 45%;
+            padding-right: 10px;
+            white-space: nowrap;
+            content: attr(data-column);
+        }
+
+        .table-responsive .norms thead {
+            display: none;
+        }
+    }
+</style>
+
+<section class="content">
+    <div class="row">
+        <div class="col-md-9 col-sm-12">
+            <div class="box box-primary">
+                <div class="box-header">
+                    <h3 class="box-title">Norms</h3>
+                    {#
+                    <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                        <button type="button" class="btn btn-tool" data-card-widget="remove" title="Remove">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                    </div>
+                    #}
+                </div>
+                <div class="box-body p-0 table-responsive">
+                    <table class="table table-striped projects norms">
+                        <thead>
+                        <tr>
+                            <th class="text-center">
+                                #
+                            </th>
+                            <th class="text-center">
+                                Domain
+                            </th>
+                            <th class="text-center">
+                                Norm Name
+                            </th>
+                            <th class="text-center">
+                                Norm Type
+                            </th>
+                            <th class="text-center">
+                                Condition function
+                            </th>
+                            <th class="text-center">
+                                Reward function
+                            </th>
+                            <th class="text-center">
+                                Penalty function
+                            </th>
+                            <th class="text-center">
+                                Roles
+                            </th>
+                            <th class="text-center">
+                                Inviolable
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for domain, norms in norms_db.items() %}
+                        {% for norm in norms %}
+                        <tr>
+                            <td class="text-center" data-column="#">
+                                {{ loop.index }}
+                            </td>
+                            <td class="text-center" data-column="Domain">
+                                <small class="badge btn-primary">{{ domain | replace("Domain.", "") }}</small>
+                            </td>
+
+                            <td class="text-center" data-column="Norm Name">
+                                {{ norm.name }}
+                            </td>
+                            <td class="text-center" data-column="Norm Type">
+                                <!--small class="badge
+                                   {% if norm.norm_type.value == 0 %}btn-danger
+                                   {% elif norm.norm_type.value == 1 %}btn-success
+                                   {% elif norm.norm_type.value == 2 %}btn-warning
+                                   {% endif %}">PROHIBITION</small-->
+                                <small class="badge btn-warning">
+                                    PROHIBITION
+                                </small>
+                            </td>
+                            <td class="project-actions text-center" data-column="Condition function">
+                                <a class="btn btn-primary btn-sm"
+                                   data-toggle="modal"
+                                   data-target="#modal-cond-{{ domain | replace('.', '-') }}-{{loop.index}}" href="#">
+                                    <i class="fa fa-eye">
+                                    </i>
+                                </a>
+                            </td>
+                            <td class="project-actions text-center" data-column="Reward function">
+                                {% if norm.reward_cb is none %}
+                                {% else %}
+                                <a class="btn btn-primary btn-sm {{ 'disabled' if norm.reward_cb is none else '' }}"
+                                   data-toggle="modal"
+                                   data-target="#modal-reward-{{ domain | replace('.', '-') }}-{{loop.index}}" href="#">
+                                    <i class="fa fa-eye">
+                                    </i>
+                                </a>
+                                {% endif %}
+                            </td>
+                            <td class="project-actions text-center" data-column="Penalty function">
+                                {% if norm.reward_cb is none %}
+                                {% else %}
+                                <a class="btn btn-primary btn-sm {{ 'disabled' if norm.penalty_cb is none else '' }}"
+                                   data-toggle="modal"
+                                   data-target="#modal-penalty-{{ domain | replace('.', '-') }}-{{loop.index}}"
+                                   href="#">
+                                    <i class="fa fa-eye">
+                                    </i>
+                                </a>
+                                {% endif %}
+                            </td>
+                            <td class="text-center" data-column="Roles">
+                                {% for role in norm.roles %}
+                                <small class="badge btn-primary">{{ role | replace("Role.", "") }}</small>
+                                {% endfor %}
+                            </td>
+                            <td class="text-center" data-column="Inviolable">
+                                {% if norm.inviolable %}
+                                <i class="fas fa-check-circle text-success"></i>
+                                {% else %}
+                                <i class="fas fa-times-circle text-danger"></i>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+            <!-- /.norms card -->
+        </div>
+        <div class="col-md-3 col-sm-12">
+            <div class="box box-primary ">
+                <div class="box-header">
+                    <h3 class="box-title">Actions</h3>
+                    {#
+                    <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                        <button type="button" class="btn btn-tool" data-card-widget="remove" title="Remove">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                    </div>
+                    #}
+                </div>
+                <div class="box-body p-0">
+                    <table class="table table-striped projects">
+                        <thead>
+                        <tr>
+                            <th class="text-center">
+                                #
+                            </th>
+                            <th class="text-center">
+                                Action Name
+                            </th>
+                            <th class="text-center">
+                                Code
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for name, action in actions.items() %}
+                        <tr>
+                            <td class="text-center">
+                                {{ loop.index }}
+                            </td>
+                            <td class="text-center">
+                                {{ name }}
+                            </td>
+                            <td class="project-actions text-center">
+                                <a class="btn btn-primary btn-sm"
+                                   data-toggle="modal" data-target="#modal-action-{{loop.index}}" href="#">
+                                    <i class="fas fa-folder">
+                                    </i>
+                                    View
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+        <!-- /.actions card -->
+    </div>
+    <!-- /.row -->
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box">
+                <div class="box-header border-0">
+                    <h3 class="box-title">Norms Log</h3>
+                    {#
+                    <div class="box-tools">
+                        <a href="#" class="btn btn-tool btn-sm">
+                            <i class="fas fa-download"></i>
+                        </a>
+                        <a href="#" class="btn btn-tool btn-sm">
+                            <i class="fas fa-bars"></i>
+                        </a>
+                    </div>
+                    #}
+                </div>
+                <div class="box-body table-responsive p-0">
+                    <table class="table table-striped table-valign-middle">
+                        <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Event</th>
+                            <th>Item</th>
+                            <th>Args</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for event in traces %}
+                        <tr>
+                            <td style="width: 10%">
+                                {{ event.0 }}
+                            </td>
+                            <td style="width: 10%">
+                                <small class="badge
+                                {% if 'PENALTY' in (event.1 | string()) %}
+                                    btn-danger
+                                {% elif 'REWARD' in (event.1 | string()) %}
+                                    btn-success
+                                {% else %}
+                                    btn-primary
+                                {% endif %}
+                                ">
+                                    {{ event.1 | replace("NormEventType.", "",) }}
+                                </small>
+                            <td style="width: 30%">
+                                {{ event.2}}
+                            </td>
+                            <td style="width: 50%">
+                                {{ event.3 }}
+                            </td>
+                        </tr>
+                        {% endfor %}
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- /.content -->
+
+
+{% for domain, norms in norms_db.items() %}
+{% for norm in norms %}
+<!-- Modal -->
+{% if norm.condition_fn %}
+<div class="modal fade" id="modal-cond-{{ domain | replace('.', '-') }}-{{loop.index}}" tabindex="-1"
+role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="modal-cond-title-{{ domain | replace('.', '-') }}-{{loop.index}}">Condition
+            function</h4>
+        </div>
+        <div class="modal-body">
+        <pre><code class="language-python">{{ norm.condition_fn | function_to_string }}
+        </code></pre>
+        </div>
+    </div>
+</div>
+</div>
+{% endif %}
+{% if norm.reward_cb %}
+<div class="modal fade" id="modal-reward-{{ domain | replace('.', '-') }}-{{loop.index}}"
+     tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="modal-reward-title-{{ domain | replace('.', '-') }}-{{loop.index}}">
+                Condition function</h4>
+        </div>
+        <div class="modal-body">
+        <pre><code class="language-python">{{ norm.reward_cb | function_to_string }}
+        </code></pre>
+        </div>
+    </div>
+</div>
+</div>
+{% endif %}
+{% if norm.penalty_cb %}
+<div class="modal fade" id="modal-penalty-{{ domain | replace('.', '-') }}-{{loop.index}}"
+     tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="modal-penalty-title-{{ domain | replace('.', '-') }}-{{loop.index}}">
+                Condition function</h4>
+        </div>
+        <div class="modal-body">
+        <pre><code class="language-python">{{ norm.penalty_cb | function_to_string }}
+        </code></pre>
+        </div>
+    </div>
+</div>
+</div>
+{% endif %}
+{% endfor %}
+{% endfor %}
+
+{% for name, action in actions.items() %}
+<div class="modal fade" id="modal-action-{{loop.index}}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="modal-action-title-{{loop.index}}">Action function</h4>
+            </div>
+            <div class="modal-body">
+        <pre><code class="language-python">{{ action.action_fn | function_to_string }}
+        </code></pre>
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+
+{% endblock %}
+
+{% block scripts %}
+
+{% endblock %}
+
