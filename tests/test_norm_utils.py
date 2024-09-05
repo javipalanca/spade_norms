@@ -1,7 +1,9 @@
-from spade_norms.norms.norm import Norm
 from spade_norms.norms.norm_enums import *
-from spade_norms.norms.norm_utils import * 
 import pytest
+
+from spade_norms.norms.norm_enums import *
+from spade_norms.norms.norm_utils import *
+
 
 class TestNormUtils:
 
@@ -9,7 +11,7 @@ class TestNormUtils:
         db = {}
         norm =  Norm('test', NormType.PROHIBITION, lambda x : True)
         assert len(db.values()) == 0
-        
+
         add_single(db, norm)
         assert len(db.values()) == 1
 

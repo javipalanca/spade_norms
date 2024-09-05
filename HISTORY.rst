@@ -2,6 +2,13 @@
 History
 =======
 
+0.1.4 (2024-09-05)
+------------------
+
+* Added User Interface
+* Updated SPADE version to 3.3.2
+* Upgraded aiohttp to 3.10.5
+
 0.1.3 (2023-09-15)
 ------------------
 
