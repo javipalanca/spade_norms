@@ -19,17 +19,32 @@ class NormativeEngine():
         if norm != None:
             self.add_norm(norm)
 
+
     def add_norms(self, norms: list):
         self.norm_db = norm_utils.add_multiple(self.norm_db, norms)
     
+
     def add_norm(self, norm: Norm):
         self.norm_db = norm_utils.add_single(self.norm_db, norm)
+
 
     def contains_norm(self, in_norm: Norm)-> bool:
         return norm_utils.contains(self.norm_db, in_norm)
     
+
     def remove_norm(self, norm: Norm) -> bool:
         self.norm_db = norm_utils.remove(self.norm_db, norm)
+
+
+    def get_norms(self) -> list:
+        norms = []
+        for d in self.norm_db.keys():
+            for norm in self.norm_db[d]:
+                if norm not in norms:
+                    norms.append(norm)
+
+        return norms
+
 
     def check_legislation(self, action: NormativeAction, agent: Agent) -> NormativeResponse:
         '''
@@ -54,6 +69,7 @@ class NormativeEngine():
                 normative_response.add_allowing_norm(norm)
         
         return normative_response
+    
     
     def get_appliable_norms(self, domain: Enum, agent: Agent) -> list:
         '''
